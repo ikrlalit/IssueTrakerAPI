@@ -15,32 +15,66 @@ async def create_user_q(pool, username, password, role):
             )
             return serialize_response(record)
 
-async def create_issue_q(pool, title, description, priority):
+async def create_issue_q(pool, title, description, priority,assignee_id):
     async with pool.acquire() as conn:
         async with conn.transaction():
             record = await conn.fetchrow(
                 """
-                INSERT INTO issues (title, description, priority, status)
-                VALUES ($1, $2, $3, 'OPEN')
+                INSERT INTO issues (title, description, priority, status,assignee_id,version)
+                VALUES ($1, $2, $3, 'OPEN', $4, 1)
                 RETURNING issueuuid, title, description, status, priority, version, created_at
                 """,
-                title, description, priority
+                title, description, priority, assignee_id
             )
             return serialize_response(record)
 
 
-async def list_issues_q(pool, limit, offset):
+# async def list_issues_q(pool, limit, offset):
+#     async with pool.acquire() as conn:
+#         rows = await conn.fetch(
+#             """
+#             SELECT issueuuid, title, description, status, priority, version, created_at
+#             FROM issues
+#             ORDER BY created_at DESC
+#             LIMIT $1 OFFSET $2
+#             """,
+#             limit, offset
+#         )
+#         return serialize_response(rows)
+
+async def list_issues_q(pool, limit, offset, keyword: str | None = None):
     async with pool.acquire() as conn:
-        rows = await conn.fetch(
-            """
-            SELECT issueuuid, title, description, status, priority, version, created_at
-            FROM issues
-            ORDER BY created_at DESC
-            LIMIT $1 OFFSET $2
-            """,
-            limit, offset
-        )
+        if keyword:
+            rows = await conn.fetch(
+                """
+                SELECT issueuuid, title, description, status, priority, version, created_at
+                FROM issues
+                WHERE
+                    title ILIKE '%' || $3 || '%'
+                 OR description ILIKE '%' || $3 || '%'
+                 OR status ILIKE '%' || $3 || '%'
+                 OR priority ILIKE '%' || $3 || '%'
+                ORDER BY created_at DESC
+                LIMIT $1 OFFSET $2
+                """,
+                limit,
+                offset,
+                keyword
+            )
+        else:
+            rows = await conn.fetch(
+                """
+                SELECT issueuuid, title, description, status, priority, version, created_at
+                FROM issues
+                ORDER BY created_at DESC
+                LIMIT $1 OFFSET $2
+                """,
+                limit,
+                offset
+            )
+
         return serialize_response(rows)
+
 
 
 async def get_issue_q(pool, id):

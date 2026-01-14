@@ -19,6 +19,7 @@ class IssueCreate(BaseModel):
     title: str
     description: Optional[str] = None
     priority: Optional[str] = None
+    assignee_id: Optional[int] = None
 
 class IssueUpdate(BaseModel):
     title: Optional[str]

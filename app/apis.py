@@ -6,7 +6,7 @@ import bcrypt
 
 router = APIRouter()
 
-# User APIs
+#--------------------------- USER APIS ---------------------------
 @router.post("/users", response_model=UserResponse)
 async def create_user_f(payload: UserCreate, request: Request):
     try:
@@ -29,27 +29,36 @@ async def create_user_f(payload: UserCreate, request: Request):
         raise HTTPException(status_code=500, detail="Internal server error")
     
 
-# Issue APIs
+#------------------------- ISSUE APIS -------------------------
 @router.post("/issues", response_model=IssueResponse)
 async def create_issue_f(payload: IssueCreate, request: Request):
-    return await create_issue_q(
-        request.app.state.pool,
-        payload.title,
-        payload.description,
-        payload.priority
-    )
-
+    try:
+        return await create_issue_q(
+            request.app.state.pool,
+            payload.title,
+            payload.description,
+            payload.priority,
+            payload.assignee_id
+        )
+    except UniqueViolationError:
+        raise HTTPException(
+            status_code=409,
+            detail="Issue with same title, description, priority and status already exists"
+        )
 
 @router.get("/issues", response_model=list[IssueResponse])
 async def list_issues_f(
     request: Request,
     limit: int = Query(10, le=100),
-    offset: int = 0
+    offset: int = 0,
+    search_keyword: str | None = None,
 ):
     return await list_issues_q(
         request.app.state.pool,
         limit,
-        offset
+        offset,
+        search_keyword
+
     )
 
 
@@ -85,7 +94,7 @@ async def update_issue_f(
     return issue
 
 
-
+# -----------------------ISSUES + COMMENT APIS ------------------- 
 @router.post("/issues/{id}/comments")
 async def add_comment_f(
     id: int,
@@ -102,7 +111,7 @@ async def add_comment_f(
         raise HTTPException(status_code=404, detail="Issue not found")
     return comment
 
-# ---------------- REPLACE LABELS ----------------
+# ---------------- ISSUES + LABEL APIS ----------------
 @router.put("/issues/{id}/labels")
 async def replace_labels_f(
     id: int,
@@ -118,7 +127,7 @@ async def replace_labels_f(
         raise HTTPException(status_code=404, detail="Issue not found")
     return {"message": "Labels replaced successfully"}
 
-# ---------------- BULK STATUS ----------------
+# ---------------- ISSUES BULK STATUS UPDATE API----------------
 @router.post("/issues/bulk-status")
 async def bulk_status_f(
     payload: BulkStatusUpdate,
@@ -130,7 +139,7 @@ async def bulk_status_f(
         payload.status
     )
 
-# ---------------- CSV IMPORT ----------------
+# ---------------- ISSUES DATA IMPORT WITH CSV File ----------------
 @router.post("/issues/import")
 async def import_issues_f(
     request: Request,
@@ -142,6 +151,8 @@ async def import_issues_f(
         content
     )
     return {"message": "Issues imported successfully"}
+
+# ---------------- REPORTING APIS ----------------
 
 @router.get(
     "/reports/top-assignees",
