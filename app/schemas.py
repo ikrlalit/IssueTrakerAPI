@@ -22,11 +22,11 @@ class IssueCreate(BaseModel):
     assignee_id: Optional[int] = None
 
 class IssueUpdate(BaseModel):
-    title: Optional[str]
-    description: Optional[str]
-    status: Optional[str]
-    priority: Optional[str]
-
+    title: Optional[str] = None
+    description: Optional[str] = None
+    status: Optional[str] = None
+    priority: Optional[str] = None
+    assignee_id: Optional[int] = None
 class IssueResponse(BaseModel):
     issueuuid: UUID
     title: str
@@ -35,6 +35,14 @@ class IssueResponse(BaseModel):
     priority: Optional[str]
     version: int
     created_at: datetime
+class CommentResponse(BaseModel):
+    id: int
+    content: str
+    username: str
+    created_at: datetime
+class IssueDetailResponse(IssueResponse):
+    labels: str
+    comments: List[CommentResponse]
 
 
 class CommentCreate(BaseModel):

@@ -89,6 +89,34 @@ async def get_issue_q(pool, id):
         )
         return serialize_response(record)
 
+async def get_issue_labels_q(pool, id):
+    async with pool.acquire() as conn:
+        record = await conn.fetchrow(
+            """
+            SELECT STRING_AGG(l.name, ', ' ORDER BY il.id) AS labels
+            FROM issue_labels il
+            LEFT JOIN labels l ON il.label_id = l.id
+            WHERE il.issue_id = $1;
+
+            """,
+            id
+        )
+        return serialize_response(record)
+    
+async def get_issue_comments_q(pool, id):
+    async with pool.acquire() as conn:
+        async with conn.transaction():
+            rows = await conn.fetch(
+                """
+                SELECT c.id, c.content, c.created_at, u.username
+                FROM comments c
+                JOIN users u ON c.user_id = u.id
+                WHERE c.issue_id = $1
+                ORDER BY c.created_at ASC
+                """,
+                id
+            )
+            return serialize_response(rows)
 
 async def update_issue_q(pool, id, data: dict):
     async with pool.acquire() as conn:
@@ -100,17 +128,47 @@ async def update_issue_q(pool, id, data: dict):
                     title = COALESCE($1, title),
                     description = COALESCE($2, description),
                     status = COALESCE($3, status),
-                    priority = COALESCE($4, priority)
-                WHERE id = $5 
+                    priority = COALESCE($4, priority),
+                    assignee_id = COALESCE($5, assignee_id),
+                    version = version + 1,
+                    updated_at = NOW()
+                WHERE id = $6
                 RETURNING issueuuid, title, description, status, priority, version, created_at
                 """,
                 data.get("title"),
                 data.get("description"),
                 data.get("status"),
                 data.get("priority"),
+                data.get("assignee_id"),
                 id
             )
             return serialize_response(record)
+
+
+# async def update_issue_q(pool, id, data: dict):
+#     async with pool.acquire() as conn:
+#         async with conn.transaction():
+#             record = await conn.fetchrow(
+#                 """
+#                 UPDATE issues
+#                 SET
+#                     title = COALESCE($1, title),
+#                     description = COALESCE($2, description),
+#                     status = COALESCE($3, status),
+#                     priority = COALESCE($4, priority)
+#                     assignee_id = COALESCE($5, assignee_id)
+#                     version = version + 1,
+#                     updated_at = NOW()
+#                 WHERE id = $5 
+#                 RETURNING issueuuid, title, description, status, priority, version, created_at
+#                 """,
+#                 data.get("title"),
+#                 data.get("description"),
+#                 data.get("status"),
+#                 data.get("priority"),
+#                 id
+#             )
+#             return serialize_response(record)
 
 async def add_comment_q(pool, issue_uuid, user_id, content):
     async with pool.acquire() as conn:

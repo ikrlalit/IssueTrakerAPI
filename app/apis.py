@@ -29,7 +29,7 @@ async def create_user_f(payload: UserCreate, request: Request):
         raise HTTPException(status_code=500, detail="Internal server error")
     
 
-#------------------------- ISSUE APIS -------------------------
+#------------------------- ISSUES APIS -------------------------
 @router.post("/issues", response_model=IssueResponse)
 async def create_issue_f(payload: IssueCreate, request: Request):
     try:
@@ -62,7 +62,7 @@ async def list_issues_f(
     )
 
 
-@router.get("/issues/{id}", response_model=IssueResponse)
+@router.get("/issues/{id}", response_model=IssueDetailResponse)
 async def get_issue_f(id: int, request: Request):
     issue = await get_issue_q(
         request.app.state.pool,
@@ -70,6 +70,20 @@ async def get_issue_f(id: int, request: Request):
     )
     if not issue:
         raise HTTPException(status_code=404, detail="Issue not found")
+    labels=await get_issue_labels_q(request.app.state.pool,
+        id)
+
+    issue["labels"] = (
+    labels.get("labels")
+    if labels and labels.get("labels") is not None
+    else ""
+)
+
+    comments=await get_issue_comments_q(request.app.state.pool,
+        id)
+    issue['comments']=comments if comments else []
+    
+
     return issue
 
 
@@ -111,7 +125,7 @@ async def add_comment_f(
         raise HTTPException(status_code=404, detail="Issue not found")
     return comment
 
-# ---------------- ISSUES + LABEL APIS ----------------
+# ---------------- Label Update Atomically ----------------
 @router.put("/issues/{id}/labels")
 async def replace_labels_f(
     id: int,
