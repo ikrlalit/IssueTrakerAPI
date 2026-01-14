@@ -47,14 +47,6 @@ ISSUETRACKERAPI/
 ├── issues_sample.csv     # Sample file to test csv import              
 └── README.md
 ```
-## 🔄 Design Principles
-
-### PATCH vs. PUT
-We utilize HTTP `PATCH` for **partial updates**. Unlike `PUT`, which typically requires the client to send the entire resource, `PATCH` only modifies the specific fields provided in the request body. This preserves existing data for omitted fields and reduces unnecessary data transfer.
-
-### Transactional Integrity
-All multi-step operations (e.g., updating an issue and simultaneously logging its history) are executed inside **database transactions**. This ensures **atomicity**: if any part of the process fails (like the history log), the entire operation is rolled back, preventing "data drift" or orphaned records.
-
 ---
 
 ## 🔗 Main API Endpoints
@@ -62,16 +54,16 @@ All multi-step operations (e.g., updating an issue and simultaneously logging it
 ### Issues
 * `POST /issues` — Create a new issue
 * `GET /issues` — List all issues with filters
+* `GET /issues/{id}` — Get issue with comments & labels
 * `PATCH /issues/{id}` — Partial update of an issue
 * `POST /issues/bulk-status` — Batch update status for multiple issues
 * `POST /issues/import` — Bulk creation via CSV import
 
 ### Collaboration & Reports
 * `POST /issues/{id}/comments` — Add a comment to an issue
-* `PUT /issues/{id}/labels` — Atomic label replacement (sync state)
+* `PUT /issues/{id}/labels` — Atomic label replacement
 * `GET /reports/top-assignees` — Fetch workload distribution
 * `GET /reports/latency` — Resolution speed metrics
-* `GET /issues/{id}/timeline` — Complete audit trail/history
 
 ---
 
