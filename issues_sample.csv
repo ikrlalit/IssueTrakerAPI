@@ -1,0 +1,6 @@
+title,description,priority,status
+Login button not working,Login button on homepage does not respond when clicked,high,OPEN
+Job link not opening,The job link shown on home page redirects to 404 page,medium,OPEN
+Profile update failing,Users are unable to update profile details after saving,high,IN_PROGRESS
+Slow page load,Dashboard page takes more than 10 seconds to load,low,OPEN
+Notification emails missing,Email notifications are not being sent to users,medium,CLOSED
