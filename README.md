@@ -46,7 +46,8 @@ ISSUETRACKERAPI/
 │   ├── schemas.py        # Pydantic request/response models
 │   └── queries.py        # Optimized Raw SQL queries
 ├── main.py               # Application entry point
-├── issues_sample.csv     # Sample file to test csv import              
+├── issues_sample.csv     # Sample file to test csv import    
+├── requirements.txt      # Contains required dependencies           
 └── README.md
 ```
 ---
