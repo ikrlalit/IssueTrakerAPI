@@ -46,13 +46,11 @@ ISSUETRACKERAPI/
 ├── main.py               # Application entry point
 ├── issues_sample.csv     # Sample file to test csv import              
 └── README.md
-
+```
 ## 🔄 Design Principles
 
 ### PATCH vs. PUT
 We utilize HTTP `PATCH` for **partial updates**. Unlike `PUT`, which typically requires the client to send the entire resource, `PATCH` only modifies the specific fields provided in the request body. This preserves existing data for omitted fields and reduces unnecessary data transfer.
-
-
 
 ### Transactional Integrity
 All multi-step operations (e.g., updating an issue and simultaneously logging its history) are executed inside **database transactions**. This ensures **atomicity**: if any part of the process fails (like the history log), the entire operation is rolled back, preventing "data drift" or orphaned records.
