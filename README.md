@@ -1,8 +1,6 @@
 # 🐞 Issue Tracker API
 
-A **production-grade Issue Tracking backend** built with **FastAPI**, **PostgreSQL**, and **asyncpg**, inspired by real-world systems like **Jira** and **GitHub Issues**.
-
-This project is designed to demonstrate **real backend engineering skills**, focusing on asynchronous performance, data integrity, and auditability.
+A **production-grade Issue Tracking backend** built with **FastAPI**, **PostgreSQL**, and **asyncpg**.
 
 ---
 
