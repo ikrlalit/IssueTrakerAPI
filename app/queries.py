@@ -131,22 +131,6 @@ async def bulk_update_status_q(pool, issue_ids, status):
             )
             return {"updated": len(issue_ids)}
 
-# ---------------- CSV IMPORT ----------------
-# async def import_issues_q(pool, file_content: str):
-#     reader = csv.DictReader(io.StringIO(file_content))
-
-#     async with pool.acquire() as conn:
-#         async with conn.transaction():
-#             for row in reader:
-#                 await conn.execute(
-#                     """
-#                     INSERT INTO issues (title, description, priority, status)
-#                     VALUES ($1, $2, $3, 'OPEN')
-#                     """,
-#                     row["title"],
-#                     row.get("description"),
-#                     row.get("priority")
-
 
 async def import_issues_q(pool, file_content: str):
     reader = csv.DictReader(io.StringIO(file_content))
