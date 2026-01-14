@@ -1,0 +1,74 @@
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    useruuid UUID NOT NULL DEFAULT uuid_generate_v4(),
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    role VARCHAR(30) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT uq_users_useruuid UNIQUE (useruuid)
+);
+
+CREATE INDEX idx_users_uuid ON users(useruuid);
+CREATE INDEX idx_users_username ON users(username);
+
+
+
+CREATE TABLE issues (
+    id SERIAL PRIMARY KEY,
+    issueuuid UUID NOT NULL DEFAULT uuid_generate_v4(),
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    status VARCHAR(30) NOT NULL,
+    priority VARCHAR(20),
+    assignee_id INT REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
+    version INT NOT NULL DEFAULT 1,
+    CONSTRAINT uq_issues_uuid UNIQUE (issueuuid)
+);
+
+CREATE INDEX idx_issues_uuid ON issues(issueuuid);
+CREATE INDEX idx_issues_status ON issues(status);
+CREATE INDEX idx_issues_assignee ON issues(assignee_id);
+
+
+
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    commentuuid UUID NOT NULL DEFAULT uuid_generate_v4(),
+    issue_id INT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES users(id),
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+	updated_at TIMESTAMP DEFAULT NOW(),
+    CONSTRAINT uq_comments_uuid UNIQUE (commentuuid)
+);
+
+CREATE INDEX idx_comments_uuid ON comments(commentuuid);
+CREATE INDEX idx_comments_issue_id ON comments(issue_id);
+
+
+
+CREATE TABLE labels (
+    id SERIAL PRIMARY KEY,
+    labeluuid UUID NOT NULL DEFAULT uuid_generate_v4(),
+    name VARCHAR(50) UNIQUE NOT NULL,
+    CONSTRAINT uq_labels_uuid UNIQUE (labeluuid)
+);
+
+CREATE INDEX idx_labels_uuid ON labels(labeluuid);
+
+CREATE TABLE issue_labels (
+    id SERIAL PRIMARY KEY,
+    issue_lablels_uuid UUID NOT NULL DEFAULT uuid_generate_v4(),
+    issue_id INT REFERENCES issues(id) ON DELETE CASCADE,
+    label_id INT REFERENCES labels(id) ON DELETE CASCADE,
+    CONSTRAINT uq_issue_labels UNIQUE (issue_id, label_id),
+    CONSTRAINT uq_issue_labels_uuid UNIQUE (issue_lablels_uuid)
+);
+
+
+CREATE INDEX idx_issue_labels_uuid ON issue_labels(issue_lablels_uuid);
+CREATE INDEX idx_issue_labels_issue ON issue_labels(issue_id);
+
+

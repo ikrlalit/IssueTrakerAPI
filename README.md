@@ -67,7 +67,7 @@ ISSUETRACKERAPI/
 
 ## 🔐 Security & Best Practices
 
-* **ID Masking:** **UUIDs** are used in public APIs instead of auto-incrementing integers to prevent ID enumeration attacks.
+* **ID Masking:** **UUIDs** are added in each table for saftey and to prevent ID enumeration attacks.
 * **SQL Injection Defense:** All database interactions use **parameterized queries** via `asyncpg`.
 * **Concurrency:** Managed **connection pooling** to prevent database exhaustion under heavy load.
 * **Validation:** Strict schema enforcement and data sanitization via **Pydantic**.
@@ -76,6 +76,27 @@ ISSUETRACKERAPI/
 
 ## 🚀 Running the Project
 
-### 1. Install dependencies
+Follow these steps to set up the environment and run the **Issue Tracker API** locally.
+
+### 1. Database Setup
+1. **Install PostgreSQL:** Download and install [PostgreSQL](https://www.postgresql.org/download/) and [pgAdmin4](https://www.pgadmin.org/download/).
+2. **Setup DB:** Create a new database and configure your credentials (username, password, host) in `db.py`.
+3. **Initialize Tables:** Execute the SQL queries provided in `dbtableschema.txt` to create the required tables and run the indexing queries for query performance improvement.
+
+
+---
+
+### 2. Application Setup
+
+**Clone the repository:**
 ```bash
-pip install fastapi uvicorn asyncpg bcrypt
+git clone [https://github.com/ikrlalit/IssueTrackerAPI.git](https://github.com/ikrlalit/IssueTrackerAPI.git)
+```
+Next move to project directory -
+```bash
+cd IssueTrackerAPI
+```
+
+
+
+
