@@ -17,12 +17,6 @@ A **production-grade Issue Tracking backend** built with **FastAPI**, **PostgreS
 - **Top Assignees:** Identify workload distribution across the team.
 - **Resolution Latency:** Calculate average time taken to resolve issues for performance metrics.
 
-### Audit & History (The Timeline)
-Each issue maintains a **complete, immutable audit trail** tracking:
-- Issue creation.
-- Field changes (Status, Priority, Assignee).
-- Comments and label modifications.
-
 ---
 
 ## 🏗️ Tech Stack
