@@ -51,15 +51,13 @@ ISSUETRACKERAPI/
 
 ## 🔗 Main API Endpoints
 
-### Issues
+### User, Issues & Reports 
 * `POST /issues` — Create a new issue
 * `GET /issues` — List all issues with filters
 * `GET /issues/{id}` — Get issue with comments & labels
 * `PATCH /issues/{id}` — Partial update of an issue
 * `POST /issues/bulk-status` — Batch update status for multiple issues
 * `POST /issues/import` — Bulk creation via CSV import
-
-### Collaboration & Reports
 * `POST /issues/{id}/comments` — Add a comment to an issue
 * `PUT /issues/{id}/labels` — Atomic label replacement
 * `GET /reports/top-assignees` — Fetch workload distribution
