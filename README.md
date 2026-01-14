@@ -1,6 +1,9 @@
 # 🐞 Issue Tracker API
 
-The **Issue Tracker API** is a production-grade backend system designed to manage complex software development workflows. Built with **FastAPI** and **PostgreSQL**. This project focuses on **high-concurrency architecture** and **data integrity**. 
+The **Issue Tracker API** is a production-grade backend system designed to manage complex software development workflows. Built with **FastAPI** and **PostgreSQL**.
+
+This project focuses on **high-concurrency architecture** and **data integrity**. By utilizing **Raw SQL** via the **asyncpg** driver instead of a traditional ORM, the system achieves maximum performance and gives the developer full control over database execution plans.
+
 ---
 
 ## 🚀 Features
