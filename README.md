@@ -36,13 +36,13 @@ A **production-grade Issue Tracking backend** built with **FastAPI**, **PostgreS
 ## 📁 Project Structure
 
 ```text
-ISSUETRAKERAPI/
+ISSUETRACKERAPI/
 ├── app/
 │   ├── apis.py           # API route definitions
 │   ├── db.py             # Async DB connection pooling  
 │   ├── helper.py         # Contains helper function used
 │   ├── schemas.py        # Pydantic request/response models
-│   └── queries.py   # Optimized Raw SQL queries
+│   └── queries.py        # Optimized Raw SQL queries
 │ 
 ├── main.py               # Application entry point
 └── README.md
