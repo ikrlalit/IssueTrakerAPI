@@ -93,7 +93,7 @@ Follow these steps to set up the environment and run the **Issue Tracker API** l
 
 **Clone the repository:**
 ```bash
-git clone [https://github.com/ikrlalit/IssueTrackerAPI.git](https://github.com/ikrlalit/IssueTrackerAPI.git)
+git clone https://github.com/ikrlalit/IssueTrackerAPI.git
 ```
 Next, move to project directory -
 ```bash
